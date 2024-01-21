@@ -9,63 +9,82 @@ public class twdimcontrollerbyiso : MonoBehaviour
     // down control for isinair
     //debug booleans
     [SerializeField] private bool debug_rays = false;
-    //var
-    [SerializeField] private float velocity = 1 ;
-    [SerializeField] private float coyotetime = 1 ;
 
-    [SerializeField] private float ledgecheckamount = 1 ; // raycasthit lenght
+    //var
+    [SerializeField] private float velocity = 1;
+    [SerializeField] private float jumppower = 1;
+    [SerializeField] private float coyotetime = 1;
+    [SerializeField] private float stopstarttime = 1;
+    [SerializeField] private float ledgecheckamount = 1; // raycasthit lenght
 
 
     [SerializeField] private Vector2 startstoptm = Vector2.one;
 
     [SerializeField] private LayerMask groundlayers; //select ground layers
+
     // Start is called before the first frame update
-    [SerializeField] private bool frontupcheck, frontdowncheck, backupcheck, backdowncheck;// booleans for right left checkers
+    [SerializeField]
+    private bool frontupcheck, frontdowncheck, backupcheck, backdowncheck; // booleans for right left checkers
+
     private bool isinair, hascoyote, canjump;
+
     void Start()
     {
-        
+
     }
 
     private void FixedUpdate()
     {
         //-----------------------------------//
         //control mechanism for front back down u check
-      
+
         //front up check
-        RaycastHit2D frontuphit =  Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y)
-            , transform.position.z),Vector3.right*transform.localScale.x,ledgecheckamount ,groundlayers);
+        RaycastHit2D frontuphit = Physics2D.Raycast(new Vector3(transform.position.x,
+            transform.position.y + (0.5F * transform.localScale.y)
+            , transform.position.z), Vector3.right * transform.localScale.x, ledgecheckamount, groundlayers);
         frontupcheck = frontuphit;
         //front down check
-        RaycastHit2D frontdownhit =  Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y)
-            , transform.position.z),Vector3.right*transform.localScale.x,ledgecheckamount,groundlayers);
+        RaycastHit2D frontdownhit = Physics2D.Raycast(new Vector3(transform.position.x,
+            transform.position.y - (0.5F * transform.localScale.y)
+            , transform.position.z), Vector3.right * transform.localScale.x, ledgecheckamount, groundlayers);
         frontdowncheck = frontdownhit;
         //back up check
-        RaycastHit2D backupcheckhit  =  Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y)
-            , transform.position.z),Vector3.left*transform.localScale.x,ledgecheckamount,groundlayers);
+        RaycastHit2D backupcheckhit = Physics2D.Raycast(new Vector3(transform.position.x,
+            transform.position.y + (0.5F * transform.localScale.y)
+            , transform.position.z), Vector3.left * transform.localScale.x, ledgecheckamount, groundlayers);
         backupcheck = backupcheckhit;
         //back down check
-        RaycastHit2D backdownhit  =  Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y)
-            , transform.position.z),Vector3.left*transform.localScale.x,ledgecheckamount,groundlayers);
+        RaycastHit2D backdownhit = Physics2D.Raycast(new Vector3(transform.position.x,
+            transform.position.y - (0.5F * transform.localScale.y)
+            , transform.position.z), Vector3.left * transform.localScale.x, ledgecheckamount, groundlayers);
         backdowncheck = backdownhit;
-      
-        
+
+
         //is in air check
         RaycastHit2D downcHit2D =
             Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - transform.localScale.y),
                 Vector2.down, .2F, groundlayers);
         isinair = !downcHit2D;
-  //debug part
+        //debug part
         if (debug_rays)
         {
-            Debug.DrawLine( new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y),transform.position.z),frontuphit.point,Color.green);
-            Debug.DrawLine( new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y),transform.position.z),frontdownhit.point,Color.yellow);
-            Debug.DrawLine( new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y),transform.position.z),backupcheckhit.point,Color.blue);
-            Debug.DrawLine( new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y),transform.position.z),backdownhit.point,Color.cyan);
-            Debug.DrawLine( new Vector2(transform.position.x, transform.position.y - transform.localScale.y),downcHit2D.point,Color.red);
+            Debug.DrawLine(
+                new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y),
+                    transform.position.z), frontuphit.point, Color.green);
+            Debug.DrawLine(
+                new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y),
+                    transform.position.z), frontdownhit.point, Color.yellow);
+            Debug.DrawLine(
+                new Vector3(transform.position.x, transform.position.y + (0.5F * transform.localScale.y),
+                    transform.position.z), backupcheckhit.point, Color.blue);
+            Debug.DrawLine(
+                new Vector3(transform.position.x, transform.position.y - (0.5F * transform.localScale.y),
+                    transform.position.z), backdownhit.point, Color.cyan);
+            Debug.DrawLine(new Vector2(transform.position.x, transform.position.y - transform.localScale.y),
+                downcHit2D.point, Color.red);
 
         }
-        
+
         //-----------------------------------//
 
     }
@@ -73,15 +92,63 @@ public class twdimcontrollerbyiso : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       float inputx =  Input.GetAxis("Horizontal");
-       if (inputx > 0)
-       {
-          transform.localScale = Vector3.one;
-          
-       }
-       else if(inputx < 0 )
-       {
-           transform.localScale = new Vector3(-1, 1, 1);
-       }
+        //coyotetime calculate
+        
+        //ctm end
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        float inputx = Input.GetAxis("Horizontal");
+        if (inputx > 0)
+        {
+            transform.localScale = Vector3.one; //look right
+
+        }
+        else if (inputx < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1); //look left
+        }
+
+        //movement
+        if (!frontdowncheck && !frontupcheck)
+        {
+            if (inputx > 0)
+            {
+
+                if (rb.velocity.x == velocity)
+                {
+                    rb.velocity = new Vector2(velocity, rb.velocity.y);
+                }
+                else
+                {
+                    rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(velocity, rb.velocity.y), stopstarttime);
+                }
+            }
+            else if (inputx < 0)
+            {
+                if (rb.velocity.x == -velocity)
+                {
+                    rb.velocity = new Vector2(-velocity, rb.velocity.y);
+                }
+                else
+                {
+                    rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(-velocity, rb.velocity.y), stopstarttime);
+                }
+            }
+            else
+            {
+                rb.velocity = Vector2.Lerp(rb.velocity, new Vector2(0, rb.velocity.y), stopstarttime);
+            }
+        }
+
+        if (Input.GetAxis("Jump") > 0)
+        {
+            if (!isinair)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumppower);
+            }
+        }
+
+
+
+
     }
 }
