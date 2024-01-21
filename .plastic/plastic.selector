@@ -1,0 +1,4 @@
+repository "2dplatfrmer@ismailseckin404503@cloud"
+  path "/"
+    br "/main"
+    co "/main"
