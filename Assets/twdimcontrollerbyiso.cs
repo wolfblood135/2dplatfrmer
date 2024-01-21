@@ -73,6 +73,15 @@ public class twdimcontrollerbyiso : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       float inputx =  Input.GetAxis("Horizontal");
+       if (inputx > 0)
+       {
+          transform.localScale = Vector3.one;
+          
+       }
+       else if(inputx < 0 )
+       {
+           transform.localScale = new Vector3(-1, 1, 1);
+       }
     }
 }
